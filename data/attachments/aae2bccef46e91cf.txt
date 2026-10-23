@@ -1,0 +1,1 @@
+Warning: Не удалось удалить тестовую бронь 8: {"detail":"Booking not found"}
