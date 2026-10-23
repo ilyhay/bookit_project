@@ -25,23 +25,47 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # БЕЗОПАСНОЕ создание .env для Docker Compose через секреты
+    - name: Create .env file for Docker Compose
+      run: |
+        cat > .env << EOF
+        DB_NAME=${{ secrets.DB_NAME }}
+        DB_USER=${{ secrets.DB_USER }}
+        DB_PASS=${{ secrets.DB_PASS }}
+        DB_HOST=db
+        DB_PORT=5432
+        EOF
+
     - name: Start Docker Compose
       run: docker compose up -d --build
 
     - name: Wait for services to be ready
       run: |
         echo "Waiting for API to be ready..."
-        curl --retry 10 --retry-delay 3 --retry-connrefused http://localhost:8000/docs
+        for i in {1..30}; do
+          if curl -s http://localhost:8000/docs > /dev/null 2>&1; then
+            echo "API is ready!"
+            exit 0
+          fi
+          echo "Attempt $i: API not ready yet, waiting..."
+          sleep 3
+        done
+        echo "API failed to start after 30 attempts"
+        docker compose logs api
+        exit 1
 
+    # БЕЗОПАСНЫЙ запуск тестов с передачей секретов в переменные окружения
     - name: Run Pytest with Coverage and Allure
       run: |
         pytest tests/ --cov=app --cov-report=xml --alluredir=allure-results -v
       env:
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASS: ${{ secrets.DB_PASS }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_TEST_HOST: ${{ secrets.DB_TEST_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
         DB_HOST: localhost
-        DB_PORT: 5432
-        DB_NAME: bookit
-        DB_USER: ilyhay
-        DB_PASS: Password0
         BASE_URL_DIRECT: http://localhost:8000
         USE_CHARLES: "false"
 
@@ -62,3 +86,4 @@ jobs:
         publish_branch: gh-pages
         publish_dir: allure-report
         keep_files: true
+        force_orphan: true
