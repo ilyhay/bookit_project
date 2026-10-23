@@ -38,7 +38,7 @@ jobs:
         DB_PASS: ${{ secrets.DB_PASS }}
         DB_HOST: ${{ secrets.DB_HOST }} 
         DB_TEST_HOST: ${{ secrets.DB_TEST_HOST }} 
-        DB_PORT: ${{ secrets.DB_PASS }}
+        DB_PORT: ${{ secrets.DB_PORT }}
         BASE_URL_DIRECT: http://localhost:8000
         USE_CHARLES: "false"
         EOF
@@ -70,7 +70,7 @@ jobs:
         DB_PASS: ${{ secrets.DB_PASS }}
         DB_HOST: ${{ secrets.DB_HOST }} 
         DB_TEST_HOST: ${{ secrets.DB_TEST_HOST }} 
-        DB_PORT: ${{ secrets.DB_PASS }}
+        DB_PORT: ${{ secrets.DB_PORT }}
         BASE_URL_DIRECT: http://localhost:8000
         USE_CHARLES: "false"
 
