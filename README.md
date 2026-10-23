@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/ilyhay/bookit_project/branch/main/graph/badge.svg)](https://codecov.io/gh/ilyhay/bookit_project)
+
 # BookIt API
 
 Микросервис для управления бронированиями помещений. Реализует полный CRUD-цикл с валидацией данных, проверкой уникальности слотов и прямым взаимодействием с PostgreSQL.

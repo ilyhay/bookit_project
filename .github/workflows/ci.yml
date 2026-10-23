@@ -62,7 +62,7 @@ jobs:
 
     - name: Run Pytest with Coverage and Allure
       run: |
-        pytest tests/ --cov=app --cov-report=xml --alluredir=allure-results -v
+        pytest tests/ --cov=app --cov-report=xml --cov-report=html --alluredir=allure-results -v
       env:
         DB_NAME: ${{ secrets.DB_NAME }}
         DB_USER: ${{ secrets.DB_USER }}
@@ -75,6 +75,20 @@ jobs:
     - name: Install Allure Commandline
       if: always()
       run: npm install -g allure-commandline
+
+    - name: Upload coverage to Codecov
+      if: always()
+      uses: codecov/codecov-action@v5
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: false
+        verbose: true
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: true 
 
     - name: Generate Allure Report
       if: always()
